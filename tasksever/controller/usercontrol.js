@@ -190,5 +190,13 @@ export const profile = async (req, res) => {
       res.status(400).json({ message: error.message });
     }
   };
+  export const deleteuser = async (req, res) => {
+    try {
+      let user = await User.findByIdAndDelete(req.params.id)
+      res.status(200).json({ message:"Delete sucessfully" });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  };
 
 
