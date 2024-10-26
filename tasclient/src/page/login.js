@@ -1,14 +1,18 @@
-
 import React, { useState } from 'react';
 import {
   Container,
   TextField,
   Button,
   Typography,
-  Box
+  Box,
+  IconButton,
+  InputAdornment
 } from '@mui/material';
 import { login, register } from '../api/index.js';
 import { useNavigate } from 'react-router-dom';
+import { MdVisibility, MdVisibilityOff } from 'react-icons/md';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,7 +27,7 @@ const Login = () => {
   const [signupEmailError, setSignupEmailError] = useState('');
   const [firstnameError, setFirstnameError] = useState('');
   const [lastnameError, setLastnameError] = useState('');
-  // const [message, setmessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
 
   const navigate=useNavigate()
@@ -55,56 +59,65 @@ const Login = () => {
     }
 
 
-  const apicall=async()=>{
-    try {    
-      let res=await login({
-        email:email,
-        password:password})
-      if(res.ok){
-      localStorage.setItem("token",JSON.stringify(res.data.token))
-      alert(res.message)
+    const apicall=async()=>{
+      try {    
+        let res=await login({
+          email:email,
+          password:password
+        });
+        console.log("Login Response:", res);
+        if(res?.ok){
+          localStorage.setItem("token", JSON.stringify(res.data.token));                
+          toast.success("Login Sucessfully");
+          navigate("/");
+        } else {
+          toast.error(res?.message || "Login failed");
+        }
+      } catch (error) {
+        console.log("API Error:", error);
+        toast.error("An error occurred. Please try again.");
       }
-      if(!res.ok){
-        // return setmessage(res?.message)
-      }
-    } catch (error) {
-      console.log(error)
     }
-  }
-  // if(!emailError||!passworderror){
+  if(!emailError||!passworderror){
      apicall()
-// } 
+} 
 
-    console.log('Email:', email);
-    console.log('Password:', password);
   };
 
   const handleSignupSubmit = (event) => {
     event.preventDefault();
-    
-    if (!validateName(firstname)) {
+    if(!firstname){
+      setFirstnameError('please Enter First name');
+    } else if (!validateName(firstname)) {
       setFirstnameError('First name must be alphabetic and max 100 characters');
       return;
     } else {
       setFirstnameError('');
     }
 
-    if (!validateName(lastname)) {
+    if(!lastname){
+      setLastnameError('please Enter Last name ');
+    } else if (!validateName(lastname)) {
       setLastnameError('Last name must be alphabetic and max 100 characters');
       return;
     } else {
       setLastnameError('');
     }
 
-    if (!validateEmail(emailsingup)) {
+    if(!emailsingup){
+      setSignupEmailError('please Enter email ');
+    }else if (!validateEmail(emailsingup)) {
       setSignupEmailError('Invalid email format');
       return;
     } else {
       setSignupEmailError('');
     }
+    if(!passwordsingup){
+      setPasswordError('please Enter passwor ');
+    } else {
+      setPasswordError('');
+    }
 
-
-    
   const apicall=async()=>{
     try {    
       let res=await register({
@@ -113,39 +126,46 @@ const Login = () => {
         email:emailsingup,
         password:passwordsingup})
       console.log(res)
-      setEmail("")
-      setPassword("")
+
       if(res.ok){
-        return alert(res.message)
+       toast.success(res.data.message)
+       setChangepage(!changepage)
       }
       if(!res.ok){
-        return alert(res?.message)
+        return toast.error(res?.message)
       }
     } catch (error) {
       console.log(error)
     }
   }
-  if(!emailError||!passworderror){
+  if(firstname||lastname||email||password){
      apicall()
 } 
 
   };
 
   return (
-    <div>
+    <div style={{
+      marginTop: "-22px",
+      backgroundImage: 'url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTdeMrtXbj94ZWlC2Gh45_h7YJ5lF66OEbO9Q&s")', // Add your image path here
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      height: '100vh', // Full height of the viewport
+    }}
+  >
    
     <Container component="main" maxWidth="xs" sx={{
       display: 'flex',
       alignItems: 'center',
       justifyContent: "center",
-      mt: 8,
+      // mt: 8,
     }}>
       {changepage === false ? (
         <Box sx={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          backgroundColor:"rgba(0, 0, 0, 0.26)",
+          backgroundColor:"rgb(226 219 219 / 72%)",
           height: "67vh",
           justifyContent: "center",
           borderRadius: "10px",
@@ -175,21 +195,33 @@ const Login = () => {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               id="password"
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               error={!!passworderror}
               helperText={passworderror}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ?  <MdVisibility />: <MdVisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             <Typography component="h1" variant="contained" sx={{
-              cursor: "pointer",
               fontSize: "15px",
-              color: "blue"
+              // color: "blue"
             }}
-              onClick={() => setChangepage(true)}>
-              SignUp Page
+             >
+              have an account<span style={{color:"blue",cursor: "pointer",
+              fontSize: "15px",}}  onClick={() => setChangepage(true)}> Sing Up</span>
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
               <Button
@@ -208,8 +240,8 @@ const Login = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          height: "75vh",
-          background:"#6d7285cc",
+          height: "600px",
+          backgroundColor:"rgb(226 219 219 / 72%)",
           justifyContent: "center",
           borderRadius: "10px",
           mt: 8,
@@ -225,7 +257,7 @@ const Login = () => {
               id="firstname"
               label="First Name"
               name="firstname"
-              autoComplete="firstname"
+              autoComplete="first name"
               autoFocus
               value={firstname}
               onChange={(e) => setFirstname(e.target.value)}
@@ -264,19 +296,36 @@ const Login = () => {
               fullWidth
               name="password"
               label="Password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               id="signup-password"
               autoComplete="current-password"
               value={passwordsingup}
               onChange={(e) => setPasswordsingup(e.target.value)}
+              error={!!passworderror}
+              helperText={passworderror}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ?  <MdVisibility />: <MdVisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+           
             <Typography component="h1" variant="contained" sx={{
               cursor: "pointer",
               fontSize: "15px",
               color: "blue"
             }}
-              onClick={() => setChangepage(false)}>
-              Sign In Page
+             >
+               have an account<span style={{color:"blue",cursor: "pointer",
+              fontSize: "15px",}}  onClick={() => setChangepage(false)}> Sing In</span>
+
             </Typography>
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
               <Button
@@ -293,6 +342,16 @@ const Login = () => {
           </Box>
         </Box>
       )}
+    <ToastContainer
+  position="top-right"
+  autoClose={3000}
+ 
+  closeOnClick
+  rtl={false}
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover
+/>
     </Container>
     </div>
   );
