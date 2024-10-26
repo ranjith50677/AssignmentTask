@@ -1,20 +1,19 @@
 import User from "../modal/user.js";
 import jwt from "jsonwebtoken";
 
-const auth = async (req, res, next) => {
-  try {
-    let token = req.header("token");
-    if (!token)
-      return res.status(400).json({ message: "Invalid Authentication" });
-    let decoded = jwt.verify(token, process.env.JWT);
-    if (!decoded)
-      return res.status(400).json({ message: "Invalid Authentication" });
-    let user = await User.findOne({ _id: decoded.id });
-    req.user = user;
-    next();
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+export const protect = async (req, res, next) => {
+  let token;
+  if (req.header) {
+    try {
+       token = req.header("token"); 
+      const decoded = jwt.verify(token, process.env.JWT); 
+      // Attach the authenticated user to the request
+      req.user = await User.findById({_id:decoded.id}).select('-password');
+      next();
+    } catch (error) {
+      res.status(401).json({ message: 'Not authorized, token failed' });
+    }
+  } else {
+    res.status(401).json({ message: 'No token, authorization denied' });
   }
 };
-
-export default auth;
