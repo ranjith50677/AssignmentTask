@@ -73,15 +73,14 @@ export const getAll=async(body)=>{
     return{data:data,ok:true}
 }
 export const profile=async()=>{
-    let token=localStorage.getItem("token")
+    let gettoken=localStorage.getItem("token")
     const requestoption={
         method:"GET",
         mode:"cors",
-        header:{
+        headers:{
             "content-type":"application/json",
-            // token:getToken
-        },
-       
+            token:JSON.parse(gettoken)
+        },       
     }
     const response =await fetch (`${baseurl}user/profile`,requestoption)
     if(!response.ok){
