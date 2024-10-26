@@ -71,7 +71,7 @@ const Login = () => {
           toast.success("Login Sucessfully");
           navigate("/");
         } else {
-          toast.error(res?.message || "Login failed");
+          toast.error(res?.data?.message || "Login failed");
         }
       } catch (error) {
         console.log("API Error:", error);
@@ -132,13 +132,13 @@ const Login = () => {
        setChangepage(!changepage)
       }
       if(!res.ok){
-        return toast.error(res?.message)
+        return toast.error(res?.data?.message)
       }
     } catch (error) {
       console.log(error)
     }
   }
-  if(firstname||lastname||email||password){
+  if(firstname && lastname && email && password){
      apicall()
 } 
 
