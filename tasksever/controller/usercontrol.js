@@ -167,13 +167,14 @@ export const login = async (req, res) => {
       res.status(400).json({ message: error.message });
     }
   };
-  export const profile = async (req, res) => {
+export const profile = async (req, res) => {
     try {
-      let user = await User.findById({_id: req.user.id});
-      res.status(200).json({ user });
+      console.log("User from request:", req.user);
+      // let user = await User.findById({_id: req.user.id});
+      res.status(200).json({ user:req.user });
     } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
+      res.status(400).json({ message: error.message });
+    }
   };
 
   export const UpdateUser = async (req, res) => {
