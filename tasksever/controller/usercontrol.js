@@ -29,7 +29,7 @@ if(!firstname){
 }
 
 if(!lastname){return res.status(400).json({message:"please enter lastname"})
-}else if(!validateName(firstname)){
+}else if(!validateName(lastname)){
     return res.status(400).json({message:" only alphabetical charater enter and max 100 charater "})
   }
 if(!email){
@@ -85,7 +85,7 @@ if(!firstname){
 }
 
 if(!lastname){return res.status(400).json({message:"please enter lastname"})
-}else if(!validateName(firstname)){
+}else if(!validateName(lastname)){
     return res.status(400).json({message:" only alphabetical charater enter and max 100 charater "})
   }
 if(!email){
