@@ -4,7 +4,7 @@ export const register=async(body)=>{
     const requestoption={
         method:"POST",
         mode:"cors",
-        header:{
+        headers:{
             "content-Type":"application/json"
         },
         body: JSON.stringify(body),
@@ -23,7 +23,7 @@ export const login=async(body)=>{
     const requestoption={
         method:"POST",
         mode:"cors",
-        header:{
+        headers:{
            "Content-Type": "application/json"
         },
         body: JSON.stringify(body),
