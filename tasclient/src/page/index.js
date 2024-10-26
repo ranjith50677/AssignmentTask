@@ -31,6 +31,7 @@ function Dashboard() {
   const getProfile = async () => {
     try {
       const res = await profile();
+      console.log(res,"profile")
       setProfiledata(res.data.user);
     
     } catch (err) {
@@ -63,6 +64,7 @@ function Dashboard() {
             <MdAccountCircle size={30} />
           </IconButton>
 
+          {profileData?.isOwner===true && 
           <Button
             variant="contained"
             sx={{ width: "150px" }}
@@ -70,6 +72,7 @@ function Dashboard() {
           >
             {view ? "Back" : "Create"}
           </Button>
+           }
         </Box>
         <Box padding={2}  borderRadius={2} marginTop={2}>
           {view ? (
