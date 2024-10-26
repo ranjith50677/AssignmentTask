@@ -8,25 +8,29 @@ import {
   Paper,
   Grid,
 } from '@mui/material';
-import { BiEdit } from 'react-icons/bi';
-import { CiSettings } from 'react-icons/ci';
-import imageavatar from "../assets/imageavatar.jpg"
+import { useNavigation } from 'react-router-dom';
+// import { BiEdit } from 'react-icons/bi';
+// import { CiSettings } from 'react-icons/ci';
+// import imageavatar from "./"
 
  
-const Profile = ({profileData}) => { 
-    console.log(profileData,"pro");
-    
+const Profile = ({profileData}) => {     
 
+const navigate=useNavigation()
+    const logout=()=>{
+     localStorage.removeItem("token")
+     navigate("/")
+    }
   return (
-    <Container maxWidth="sm" sx={{ mt: 5 }}>
+    <Container maxWidth="sm" sx={{ mt: 5,textAlign:"center" }}>
       {/* <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}> */}
         <Box display="flex" flexDirection="column" alignItems="center" marginBottom="10%">
           {/* Avatar */}
           <Avatar
-            src={imageavatar}
-             alt="Profile Picture"
+            // src={imageavatar}
+            //  alt="Profile Picture"
             sx={{ width: 120, height: 120, mb: 2 }}
-          />
+          >{(profileData?.firstname).slice(0,2).toUpperCase()}</Avatar>
           {/* User Info */}
           <Typography variant="h5" fontWeight="bold" gutterBottom>
             {profileData?.firstname} {profileData?.lastname}
@@ -39,7 +43,15 @@ const Profile = ({profileData}) => {
           
         </Box>
       
-       
+        <Button
+              type="submit"
+              
+              variant="contained"
+              sx={{ mt: 3, mb: 2 ,width:"150px"}}
+              onClick={logout}
+            >
+              Logout
+            </Button>
       {/* </Paper> */}
     </Container>
   );
