@@ -10,5 +10,5 @@ router.get("/profile",protect,profile)
 router.get("/getalluser",getAllUsers)
 router.get("/getuser/:id",getUserById)
 router.put("/update/:id",UpdateUser)
-router.put("/delete/:id",deleteuser)
+router.delete("/delete/:id",deleteuser)
 export default router;
